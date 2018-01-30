@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using FileHelpers;
 using System.IO;
+using Inventory.items;
 
 namespace Inventory
 {
@@ -28,12 +29,15 @@ namespace Inventory
         double puvodLeft;
         double xSnap = 0;
         double ySnap = 0;
+        string Filename = "Output.txt";
         public MainWindow()
         {
             InitializeComponent();
             GetRectangle();
             AddRectangle();
-            
+            Point souradky = new Point(50,75);
+            Weapon zbran = new Weapon(souradky,"tramvaj");
+            Console.WriteLine(zbran.Souradnice.X);
 
         }
         private void SnapToGrid(UIElement element, double vyska,double sirka)
@@ -105,6 +109,7 @@ namespace Inventory
         private void GetRectangle()
         {
             var engine = new FileHelperEngine<Objekt>();
+            var engine2 = new FileHelperEngine<Weapon>();
 
             var objekty = new List<Objekt>();
             foreach (Rectangle rect in canvas.Children.OfType<Rectangle>())
@@ -120,21 +125,45 @@ namespace Inventory
                     width = rect.Width
                 });
 
-                engine.WriteFile("Output.Txt", objekty);
+                engine.WriteFile(Filename, objekty);
             }
+        }
+        private void SaveRectangle()
+        {
+            var engine = new FileHelperEngine<ItemNew>();
+
+            var objekty = new List<ItemNew>();
+            foreach (Rectangle rect in canvas.Children.OfType<Rectangle>())
+            {
+                double leftpos = Canvas.GetLeft(rect);
+                double toppos = Canvas.GetTop(rect);
+                Point point = new Point(leftpos, toppos);
+                objekty.Add(new ItemNew()
+                {
+                    Souradnice = point,
+                    Typ = "typ"
+                });
+
+                engine.WriteFile(Filename, objekty);
+            }
+        }
+        public void LoadRectangle()
+        {
+
         }
         public void AddRectangle()
         {
             
 
             var engine = new FileHelperEngine<Objekt>();
-            var records = engine.ReadFile("Output.txt");
+            var records = engine.ReadFile(Filename);
 
             foreach (var record in records)
             {
                 Rectangle r = new Rectangle();
                 r.Width = record.width;
                 r.Height = record.height;
+
                 if(r.Width == 50 && r.Height ==50)
                 {
                     r.Fill = new ImageBrush
@@ -167,13 +196,17 @@ namespace Inventory
                 r.MouseLeftButtonDown += rect_MouseLeftButtonDown;
                 r.MouseLeftButtonUp += rect_MouseLeftButtonUp;
                 r.MouseMove += rect_MouseMove;
+
                 Canvas.SetLeft(r, record.LeftPos);
                 Canvas.SetTop(r, record.TopPos);
 
                 canvas.Children.Add(r);
+
                 int GRID_SIZE = 50;
+
                 int xpozice = Convert.ToInt32(record.LeftPos) / GRID_SIZE;
                 int ypozice = Convert.ToInt32(record.TopPos) / GRID_SIZE;
+
                 PoleVyskaSet(r.Height,xpozice , ypozice,1);
                 PoleSirkaSet(r.Width, xpozice, ypozice,1);
             }
@@ -204,12 +237,16 @@ namespace Inventory
             _isRectDragInProg = true;
             int GRID_SIZE = 50;
             var rectangle = sender as System.Windows.Shapes.Rectangle;
+
             puvodLeft = Canvas.GetLeft(rectangle);
             puvodTop = Canvas.GetTop(rectangle);
+
             double vyska = rectangle.Height;
             double sirka = rectangle.Width;
+
             int xpozicenula = Convert.ToInt32(puvodLeft) / GRID_SIZE;
             int ypozicenula = Convert.ToInt32(puvodTop) / GRID_SIZE;
+
             KontrolaPresahu(sirka, vyska);
             
             PoleVyskaSet(vyska, xpozicenula, ypozicenula, 0);

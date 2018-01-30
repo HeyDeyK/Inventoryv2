@@ -98,11 +98,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AItem.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ItemNew.cs" />
+    <Compile Include="items\AItem.cs" />
+    <Compile Include="items\Armor.cs" />
+    <Compile Include="items\Food.cs" />
+    <Compile Include="items\Potion.cs" />
+    <Compile Include="items\Weapon.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

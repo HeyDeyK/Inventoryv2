@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FileHelpers;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Inventory
 {
-    abstract class AItem
+    [DelimitedRecord("|")]
+    class ItemNew
     {
-        public int LeftPos;
-        public int TopPos;
-        
+        public Point Souradnice;
+        public string Typ;
+
     }
 }
